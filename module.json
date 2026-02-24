@@ -1,0 +1,21 @@
+{
+  "id": "dnd5e-custom-resources",
+  "title": "D&D5e Custom Resources",
+  "description": "Adds custom resources tab/support for D&D5e.",
+  "version": "0.1.1",
+  "authors": [{ "name": "Aluklir", "url": "https://github.com/Mathew-debug" }],
+  "url": "https://github.com/Mathew-debug/D-D-Custom-Resources",
+  "manifest": "https://raw.githubusercontent.com/USERNAME/REPO/v0.1.1/module.json",
+  "download": "https://github.com/Mathew-debug/D-D-Custom-Resources/releases/download/v0.1.1/dnd5e-custom-resources.zip",
+
+  "compatibility": { "minimum": "13", "verified": "13.350" },
+  "relationships": {
+    "systems": [{
+      "id": "dnd5e",
+      "type": "system",
+      "compatibility": { "minimum": "5.2.5", "verified": "5.2.5" }
+    }]
+  },
+  "esmodules": ["scripts/main.js"],
+  "styles": ["css/custom-resources.css"]
+}

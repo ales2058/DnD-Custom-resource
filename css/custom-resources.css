@@ -1,0 +1,298 @@
+/* ================================
+   dnd5e-custom-resources.css (clean)
+   - meters + animated gradient fill
+   - inline edit inside bar
+   - compact spellpoints-like config dialog (no duplicates)
+   ================================ */
+
+:root {
+  --cr-left-color-default: #3a0e5f;
+  --cr-right-color-default: #8a40c7;
+  --cr-animation-speed: 5s;
+}
+
+/* --------------------------------
+   Resource meters
+--------------------------------- */
+
+.meter-group.dnd5e-custom-resources__wrap {
+  margin: 0.35rem 0 0 0;
+}
+
+.meter-group.dnd5e-custom-resources__wrap .meter.sectioned.dnd5e-custom-resources__meter {
+  border: 1px solid var(--dnd5e-color-gold);
+  border-radius: 4px;
+  font-family: var(--dnd5e-font-roboto);
+  font-weight: 700;
+  box-shadow: inset 0 0 16px rgba(0, 0, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+  height: 1.5rem;
+}
+
+.meter-group.dnd5e-custom-resources__wrap .progress.dnd5e-custom-resources__progress {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+
+  /* IMPORTANT: never let dnd5e cut the progress width */
+  width: 100% !important;
+  inline-size: 100% !important;
+  flex: 1 1 auto;
+
+  /* theme vars */
+  --cr-left-color: var(--cr-left-color, var(--cr-left-color-default));
+  --cr-right-color: var(--cr-right-color, var(--cr-right-color-default));
+  --cr-bar-scale: var(--cr-bar-scale, 0);
+}
+
+/* Disable system fill pseudo-element to avoid conflicts */
+.meter-group.dnd5e-custom-resources__wrap
+  .meter.sectioned.dnd5e-custom-resources__meter
+  .progress.dnd5e-custom-resources__progress::before {
+  content: none !important;
+}
+
+/* Animated gradient fill (reliable) */
+.meter-group.dnd5e-custom-resources__wrap .dnd5e-custom-resources__fill {
+  position: absolute;
+  inset: 1px;
+  border-radius: 2px;
+  z-index: 1;
+
+  transform-origin: left center;
+  transform: scaleX(var(--cr-bar-scale));
+
+  box-shadow: inset 0 1px 0 1px var(--dnd5e-highlight-40);
+
+  background: linear-gradient(
+    to right,
+    var(--cr-left-color),
+    var(--cr-right-color),
+    var(--cr-left-color)
+  );
+  background-size: 200% 100%;
+  animation: cr_scroll var(--cr-animation-speed) linear infinite;
+}
+
+@keyframes cr_scroll {
+  0% { background-position: 0 0; }
+  100% { background-position: -200% 0%; }
+}
+
+/* Text above fill */
+.meter-group.dnd5e-custom-resources__wrap .progress.dnd5e-custom-resources__progress .label,
+.meter-group.dnd5e-custom-resources__wrap .progress.dnd5e-custom-resources__progress input {
+  position: relative;
+  z-index: 2;
+}
+
+.meter-group.dnd5e-custom-resources__wrap .meter .label {
+  inline-size: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding-inline-start: 8px;
+  padding-inline-end: 12px;
+  color: var(--color-text-light-0);
+}
+
+/* Cursor for clicking value label (inline edit) */
+.dnd5e-custom-resources__value-label {
+  cursor: pointer;
+}
+
+/* Inline edit input (spellpoints-like) */
+.dnd5e-custom-resources__progress input.seamless-input,
+.dnd5e-custom-resources__progress input.cr_value {
+  background: transparent;
+  border: 0;
+  outline: 0;
+  width: 100%;
+  text-align: left;
+  padding-inline-start: 8px;
+  padding-inline-end: 12px;
+  color: var(--color-text-light-0);
+  font-weight: 800;
+}
+
+/* Dropzone (only rendered in edit mode via JS) */
+.dnd5e-custom-resources__dropzone {
+  margin-top: 6px;
+  padding: 8px 10px;
+  border: 1px dashed rgba(255, 255, 255, 0.25);
+  border-radius: 6px;
+  opacity: 0.85;
+  user-select: none;
+}
+.dnd5e-custom-resources__dropzone-title {
+  font-weight: 700;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+/* --------------------------------
+   Dialog skin (spellpoints-like)
+   Applies only to dialogs created with options.classes = ["cr-spellpoints"]
+--------------------------------- */
+
+.window-app.cr-spellpoints {
+  --cr-modal-border: rgba(255, 255, 255, 0.14);
+  --cr-modal-panel: rgba(20, 24, 30, 0.92);
+  --cr-modal-panel2: rgba(28, 33, 42, 0.92);
+  --cr-modal-text: rgba(235, 240, 255, 0.92);
+}
+
+.window-app.cr-spellpoints .window-content {
+  padding: 14px 14px 12px 14px;
+  background:
+    radial-gradient(circle at 20% 10%, rgba(120, 80, 200, 0.22), transparent 45%),
+    radial-gradient(circle at 80% 30%, rgba(90, 150, 255, 0.14), transparent 50%),
+    linear-gradient(180deg, rgba(16, 18, 22, 0.96), rgba(12, 14, 18, 0.96));
+  color: var(--cr-modal-text);
+}
+
+.window-app.cr-spellpoints .window-header {
+  background: transparent;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.window-app.cr-spellpoints .window-title {
+  color: rgba(235, 240, 255, 0.95);
+  font-weight: 900;
+  letter-spacing: 0.3px;
+}
+
+.window-app.cr-spellpoints button.control-button,
+.window-app.cr-spellpoints .unbutton.control-button {
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: rgba(10, 12, 16, 0.35);
+  color: rgba(235, 240, 255, 0.92);
+  border-radius: 10px;
+  padding: 8px 12px;
+}
+
+.window-app.cr-spellpoints button.control-button:hover,
+.window-app.cr-spellpoints .unbutton.control-button:hover {
+  background: rgba(80, 60, 160, 0.28);
+  border-color: rgba(180, 130, 255, 0.45);
+}
+
+/* Primary action accent */
+.window-app.cr-spellpoints .cr-primary {
+  background: rgba(80, 60, 160, 0.35) !important;
+  border-color: rgba(180, 130, 255, 0.55) !important;
+}
+
+/* --------------------------------
+   Compact config layout (no internal big title)
+--------------------------------- */
+
+.cr-mini {
+  display: grid;
+  gap: 10px;
+}
+
+.cr-mini-top {
+  display: grid;
+  grid-template-columns: 56px 1fr 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+.cr-mini-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: linear-gradient(180deg, rgba(36, 42, 54, 0.9), rgba(18, 22, 30, 0.9));
+  box-shadow: inset 0 0 18px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+}
+
+.cr-mini-icon i {
+  font-size: 26px;
+  color: rgba(230, 200, 255, 0.9);
+}
+
+.cr-mini-cap {
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.cr-mini-text {
+  height: 46px;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(10, 12, 16, 0.35);
+  color: rgba(235, 240, 255, 0.95);
+  padding: 0 12px;
+}
+
+.cr-mini-big {
+  height: 62px;
+  border-radius: 10px;
+  border: 1px solid rgba(160, 120, 255, 0.38);
+  background: rgba(20, 14, 34, 0.38);
+  color: rgba(235, 240, 255, 0.95);
+  font-size: 40px;
+  font-weight: 900;
+  text-align: center;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.cr-mini-colors {
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  background: rgba(10, 12, 16, 0.22);
+  padding: 10px 12px 12px 12px;
+}
+
+.cr-mini-colorrow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  align-items: end;
+}
+
+.cr-mini-color {
+  display: grid;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 0.6px;
+  opacity: 0.9;
+}
+
+.cr-mini-color input[type="color"] {
+  width: 100%;
+  height: 44px;
+  padding: 0;
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: transparent;
+}
+
+.cr-mini-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cr-mini-footer .left,
+.cr-mini-footer .right {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Responsive */
+@media (max-width: 720px) {
+  .cr-mini-top { grid-template-columns: 56px 1fr; }
+  .cr-mini-colorrow { grid-template-columns: 1fr; }
+}
