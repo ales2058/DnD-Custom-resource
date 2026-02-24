@@ -1,3 +1,4 @@
 # Dnd Custom Resource
 Позволяет добавлять дополнительные ресурсы в чарники рядом с хп и ячейками. Также работает с tidy5e. 
 Foundry 13.350, DnD 5.2.5
+Создатель: Dark Matt. discord-aluklir. 
