@@ -27,17 +27,21 @@
       console.warn(`${MODULE_ID} | updateActor remount failed`, e);
     }
   });
+function scheduleMount(app, html) {
+  const actor = app?.actor;
+  if (!actor) return;
 
-  function scheduleMount(app, html) {
-    const actor = app?.actor;
-    if (!actor) return;
-    if (!["character", "npc"].includes(actor.type)) return;
+  // ONLY player characters:
+  // - type must be "character"
+  // - must have at least one PLAYER owner (so GM-only chars / NPC / monsters won't get the UI)
+  if (actor.type !== "character") return;
+  if (!actor.hasPlayerOwner) return;
 
-    const $html = toJQ(html);
-    if (!$html) return;
+  const $html = toJQ(html);
+  if (!$html) return;
 
-    requestAnimationFrame(() => mount(app, $html));
-  }
+  requestAnimationFrame(() => mount(app, $html));
+}
 
  function mount(app, $html) {
   const actor = app.actor;
